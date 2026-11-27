@@ -1,8 +1,7 @@
-"""Binary real/fake metrics. ``fake`` (AI-generated) is the positive class."""
+"""WeVisForensics binary metrics adapted for the image scoring script."""
 
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import Any, Iterable
 
 
@@ -43,25 +42,3 @@ def binary_metrics(pairs: Iterable[tuple[str, str | None]]) -> dict[str, Any]:
         "strict": block(pairs),
         "valid_only": block(valid),
     }
-
-
-def split_tool_errors(records: Iterable[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
-    """Infrastructure failures stay out of the strict denominator."""
-    kept, errors = [], 0
-    for record in records:
-        if record.get("status") == "tool_error":
-            errors += 1
-        else:
-            kept.append(record)
-    return kept, errors
-
-
-def summarize(records: Iterable[dict[str, Any]], *, group_key: str = "source") -> dict[str, Any]:
-    records = list(records)
-    groups: dict[str, list[tuple[str, str | None]]] = defaultdict(list)
-    for record in records:
-        pair = (record["label"], record.get("answer"))
-        groups["__all__"].append(pair)
-        if record.get(group_key):
-            groups[str(record[group_key])].append(pair)
-    return {name: binary_metrics(pairs) for name, pairs in sorted(groups.items())}

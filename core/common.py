@@ -1,32 +1,16 @@
-"""Small helpers shared by the agent loop and the tools."""
+"""Adapted from WeVisForensics for parsing image-model responses."""
 
 from __future__ import annotations
 
 import json
-import math
 import re
 from typing import Any, Optional
-
-
-class ToolError(RuntimeError):
-    """Infrastructure failure while executing a tool (decoding, OCR, ASR, HTTP)."""
-
-
-class SpecialistOutputError(ValueError):
-    """A specialist model returned output that violates its JSON contract."""
 
 
 class DuplicateJSONKeyError(ValueError):
     def __init__(self, key: str):
         super().__init__(f"duplicate JSON key: {key}")
         self.key = key
-
-
-def format_seconds(value: float) -> str:
-    number = float(value)
-    if not math.isfinite(number):
-        return str(number)
-    return f"{number:.1f}"
 
 
 def strip_code_fence(text: str) -> str:
@@ -41,28 +25,8 @@ def strip_code_fence(text: str) -> str:
     return text.strip()
 
 
-def try_parse_json(text: str) -> Optional[Any]:
-    """Lenient parser used for specialist outputs."""
-    if not text:
-        return None
-    cleaned = strip_code_fence(text)
-    try:
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        pass
-    for open_ch, close_ch in (("{", "}"), ("[", "]")):
-        start = cleaned.find(open_ch)
-        end = cleaned.rfind(close_ch)
-        if start != -1 and end > start:
-            try:
-                return json.loads(cleaned[start:end + 1])
-            except json.JSONDecodeError:
-                continue
-    return None
-
-
 def try_parse_json_strict(text: str) -> Optional[Any]:
-    """Main-agent parser: duplicate keys at any depth are rejected, not overwritten."""
+    """Parse model output and reject duplicate JSON keys at any depth."""
     if not text:
         return None
     cleaned = strip_code_fence(text)

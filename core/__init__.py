@@ -1,1 +1,1 @@
-"""Shared infrastructure: OpenAI-compatible client, frame decoding, parsing helpers, metrics."""
+"""单图检测与评测使用的 JSON 解析和分类指标。"""

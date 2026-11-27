@@ -1,4 +1,4 @@
-"""命令行入口。例：python detect.py examples/science/mitosis.tif --out result.json"""
+"""命令行入口。例：python detect.py "real/experiment figure/2308.14409_fig4.png" --out results/chart.json"""
 
 import argparse
 import json

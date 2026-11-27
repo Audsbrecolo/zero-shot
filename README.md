@@ -49,8 +49,10 @@ python detect.py "real/experiment figure/2308.14409_fig4.png" --backend api --ba
 - `--mode direct` 是只给同一模型看一次全图的对照。可以用它与五角色方案在相同图片上比较。
 - 用编辑器打开 JSON。`inspections` 写每个角色检查了什么，`candidates` 给出区域和替代解释，`reviews` 解释哪些观察得以保留。`image.boxes_xyxy` 可定位回原图。
 
-[从入口开始读代码](docs/paper-figures.md) · [测试记录与评测方法](docs/science-image-validation.md) · [原 WeVisForensics 视频项目](README-WeVisForensics.md)
+[逐文件代码讲解](docs/paper-figures.md) · [用自己的图片计分](docs/paper-figures.md#用自己的图片计分)
 
 ## 当前实测效果
 
 三类论文插图都已用 Qwen3-VL-8B 的量化权重完成单图推理。三张原图和一张同题 GPT 生成图的主裁决均为“证据不足”；强制二选一均判为常规制图，因此漏检了生成图。当前结果适合用于检查取证流程，尚未证明能够可靠地区分来源。[四份报告与复现命令](docs/paper-figures.md#端到端单图实测)
+
+严格解析 JSON 和计算分类指标的代码沿用了腾讯 WeVisForensics 项目的实现。[上游项目](https://github.com/Tencent/WeVisForensics) · [许可证](LICENSE.txt)

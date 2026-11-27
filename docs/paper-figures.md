@@ -14,6 +14,7 @@
 | [science_image/prompts.py](../science_image/prompts.py) | 定义候选、复核、裁决所用的公共提示和输出格式。旧显微图角色也在这里。 |
 | [science_image/pipeline.py](../science_image/pipeline.py) 中的 `run` | 依次调用四个取证角色，为观察编号，再让模型对照全图和证据局部复核。裁决只可以引用保留的编号。`field`、`rows`、`observation`、`review`、`decision` 检查每一步返回的内容。`first_valid_observation` 处理模型多报的情况，并留下记录。 |
 | 同文件的 `report` | 汇总判断和实际调用次数。启用 `--binary` 后，若主裁决弃判，额外记录一个强制比较结果；已有明确主裁决时直接复用。 |
+| [core/common.py](../core/common.py) 和 [core/metrics.py](../core/metrics.py) | 前者读取模型返回的 JSON，遇到同名字段重复就报错。后者分别统计全部图片与已给出明确判断的图片。 |
 | [score_images.py](../score_images.py) | 读带来源标签的 CSV，逐张核对文件指纹后计算指标。`--binary` 统计二选一结果。默认把弃判计入总样本，另报明确判断覆盖率。 |
 | [tests/test_paper_figures.py](../tests/test_paper_figures.py) 和 [tests/test_science_image.py](../tests/test_science_image.py) | 检查长条图覆盖、标签隔离、二选一与原裁决分别保存、复核编号、错误处理和计分。 |
 
@@ -24,8 +25,7 @@
 验证单图和离线代码测试可在仓库根目录运行。
 
 ```bash
-python -m unittest discover -s tests -p 'test_*image.py'
-python -m unittest discover -s tests -p 'test_paper_figures.py'
+python -m unittest discover -s tests
 python detect.py "real/experiment figure/2308.14409_fig4.png" --backend api --binary --out results/line-chart.json
 ```
 
@@ -57,3 +57,26 @@ mkdir -p results
 curl -fL 'https://raw.githubusercontent.com/Joyce-yoyo/SciFigDetect/24093d014b0e09f40c7904f28de3022c07ba17e6/SciFigDetectDataset/gpt/variant_1/experimental%20figure/2308.14409_fig4.png' -o results/chart-control.png
 python detect.py results/chart-control.png --backend api --binary --out results/chart-control.json
 ```
+
+## 用自己的图片计分
+
+在仓库根目录创建 UTF-8 编码的 `labels.csv`。每行填入图片、已知来源标签、这张图的检测报告和来源名称。相对路径从 CSV 所在目录算起。下面这一行引用了分支中已有的样本和报告，可以直接运行。
+
+```csv
+image,label,report,source
+real/experiment figure/2308.14409_fig4.png,real,examples/science/paper-reports/experimental.json,SciFigDetect原图
+```
+
+```bash
+python score_images.py labels.csv
+python score_images.py labels.csv --binary
+```
+
+第一条命令统计主裁决，第二条统计报告中的二选一结果。加入已知的生成图时，标签填 `ai_generated`，来源填生成器名称。计分程序会核对图片与报告的 SHA-256 指纹。同一清单中的模型、后端、运行模式和图像类型须一致。比较五角色与单次看图时，使用相同图片，为各模式分别建立清单。同一原图及其变体应放在同一数据划分中。
+
+| 字段 | 怎样读 |
+| --- | --- |
+| `n`、`uncertain`、`coverage` | 样本总数、证据不足的张数，以及给出明确判断的张数占总数的比例。 |
+| `accuracy_all`、`accuracy_decided` | 前者用正确张数除以全部张数，后者只在明确判断的样本上计算。全部弃判时后者为 `null`。 |
+| `ai_recall_all`、`real_recall_all` | 在已知为 AI 或真实的图片中，各有多少比例判对。缺少该类样本时为 `null`。 |
+| `by_source` | 每个数据来源各自的结果，可用来检查某个生成器是否特别容易漏检。 |
