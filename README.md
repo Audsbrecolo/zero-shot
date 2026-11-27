@@ -1,215 +1,50 @@
-<div align="center">
+# 论文插图的零样本 AI 生成检测
 
-# WeVisForensics
+给一张论文中的实验结果图、示意图或方法总览图，检查它更接近研究者常规绘制的图还是 AI 生成的插图。输入可以是折线图、柱状图、网络架构图，也可以是多面板结果对照。程序输出中文解释并保留逐条证据。论文里画了 AI 模型、展示 AI 输出或写有 “Generated Motion”，只说明论文展示了什么；需另行判断整张插图的制作来源。
 
-### Self-Evolving Agent for Omni AI-Generated Video Detection
+这个分支有 21 张标为真实的 PNG。文件夹名、论文编号、原文件名和真假标签均不会进入模型提示。
 
-<p>
-  <a href="https://tencent.github.io/WeVisForensics"><img src="https://img.shields.io/badge/Project-Page-4285F4?logo=googlechrome&logoColor=white" alt="Project Page"></a>
-  <a href="https://arxiv.org/abs/2611.21373"><img src="https://img.shields.io/badge/Paper-arXiv-EA4335?logo=arxiv&logoColor=white" alt="Paper"></a>
-  <a href="https://huggingface.co/tencent/WeVisForensics"><img src="https://img.shields.io/badge/🤗%20Model-WeVisForensics--4B-FBBC04" alt="WeVisForensics-4B"></a>
-  <a href="LICENSE.txt"><img src="https://img.shields.io/badge/License-Apache%202.0-blue" alt="License"></a>
-</p>
+| 样本目录 | 数量 | 例子 |
+| --- | ---: | --- |
+| [real/experiment figure](real/experiment%20figure/) | 10 | 双横轴折线图、柱状图、方法结果对照、遥感原图和掩膜 |
+| [real/illustration](real/illustration/) | 5 | 编码器与解码器连接图、训练流程图、模块示意图 |
+| [real/overview](real/overview/) | 6 | 框架总览、搜索空间、表格与网络结构组合图 |
 
-**English** | [简体中文](README_zh-CN.md)
+## 先在学校 GPU 容器跑一张
 
-</div>
-
-> **WeVisForensics** treats AI-generated video detection as an investigation. A main agent, the **investigator**, watches a coarse overview and decides which artifact to examine, over which window, and when to conclude. It dispatches each inspection to a self-evolving library of forensic sub-agents, the **inspectors**, that cover visual appearance, physical consistency, common sense, on-screen text, and the audio track.
-
-![Teaser](assets/teaser.png)
-
-## ✨ Highlights
-
-- 🕵️ **Adaptive investigation**: the investigator calls only the inspectors a video needs, at the moments that matter, and stops as soon as the evidence is decisive.
-- 🧰 **Omni-modal inspector library**: four trained visual inspectors plus speech and speaker tools, so the same agent catches rendering artifacts, broken physics, impossible events, warped text, and mismatched voices.
-- 🔁 **Self-evolving training (DTPO)**: the investigator and its inspectors co-evolve from shared interactions, with fast reinforcement learning for the investigator and slower refinement of the inspectors.
-- 🏆 **State of the art**: 95.2% average accuracy across in-domain, out-of-domain, and agentic benchmarks, 9.0 points above the strongest prior detector.
-
-## 📢 News
-
-- **[2026-11]** 🎉 We release **WeVisForensics**: the technical report, the 4B LoRA weights, the inference package and the Gradio demo.
-
-## 📝 TODO
-
-- [x] Inference package
-- [x] Gradio demo
-- [x] Evaluation pipeline
-- [x] Technical report on arXiv
-- [ ] Model weights on Hugging Face
-- [ ] AgenticCue benchmark
-
-## 🏆 Performance at a Glance
-
-Headline detection accuracy (%) of **WeVisForensics-4B** against the strongest prior method on each benchmark (such as Qwen3.5-397B, Gemini-3.1-Pro, and MLLM-based video forgery detectors like BusterX++, Skyra and VideoVeritas).
-
-| Split | Benchmark | Best Baseline | **WeVisForensics** |
-| --- | --- | --- | --- |
-| 🏠 In-domain | GenBuster-Bench | 94.3 | **97.7** |
-| 🌍 Out-of-domain | GenBuster-Bench++ | 91.4 | **97.5** |
-| 🌍 Out-of-domain | MintVid General | 82.2 | **88.0** |
-| 🧩 Agentic | AgenticCue | 79.3 | **97.8** |
-| ⭐ | Average | 86.2 | **95.2** |
-
-<sub>Each benchmark row reports the strongest prior detector on that benchmark. The Average row is the best average over prior detectors.</sub>
-
-<details>
-<summary><b>📊 Full results (click to expand)</b></summary>
-
-<table>
-<thead>
-<tr><th rowspan="2" align="left">Method</th><th rowspan="2">GB</th><th rowspan="2">GB++</th><th colspan="6">MintVid General</th><th colspan="5">AgenticCue</th><th rowspan="2">Avg.</th></tr>
-<tr><th>Hailuo</th><th>Jimeng</th><th>Kling</th><th>Seedance</th><th>Sora2</th><th>Wan2.5</th><th>Visual</th><th>Physical</th><th>OCR</th><th>Common</th><th>Audio</th></tr>
-</thead>
-<tbody>
-<tr><td colspan="15" align="left"><i>Binary detectors</i></td></tr>
-<tr><td align="left">NSG-VD</td><td>46.4</td><td>53.7</td><td>57.1</td><td>48.5</td><td>52.6</td><td>54.7</td><td>57.1</td><td>51.0</td><td>41.7</td><td>43.2</td><td>41.7</td><td>34.2</td><td>44.4</td><td>48.7</td></tr>
-<tr><td align="left">ReStraV</td><td>51.9</td><td>66.9</td><td>59.5</td><td>56.8</td><td>55.6</td><td>64.0</td><td>50.8</td><td>54.9</td><td>55.5</td><td>54.6</td><td>51.6</td><td>47.0</td><td>51.8</td><td>57.0</td></tr>
-<tr><td colspan="15" align="left"><i>Generic MLLMs</i></td></tr>
-<tr><td align="left">Qwen3.5-4B</td><td>82.9</td><td>73.2</td><td>63.5</td><td>56.5</td><td>65.1</td><td>73.8</td><td>57.0</td><td>73.2</td><td>73.7</td><td>71.8</td><td>83.8</td><td>94.4</td><td>58.1</td><td>74.3</td></tr>
-<tr><td align="left">Qwen3.5-397B</td><td>65.1</td><td>66.7</td><td>54.7</td><td>52.0</td><td>55.8</td><td>63.0</td><td>51.4</td><td>63.4</td><td>69.2</td><td>66.7</td><td>86.0</td><td>94.5</td><td>54.1</td><td>65.7</td></tr>
-<tr><td align="left">Qwen3-VL-8B</td><td>44.8</td><td>55.2</td><td>52.0</td><td>50.4</td><td>50.5</td><td>63.0</td><td>52.6</td><td>55.9</td><td>61.7</td><td>58.6</td><td>72.2</td><td>91.9</td><td>47.8</td><td>55.1</td></tr>
-<tr><td align="left">Qwen3-Omni-30B-A3B</td><td>50.7</td><td>55.2</td><td>51.7</td><td>51.9</td><td>52.9</td><td>61.4</td><td>54.6</td><td>56.3</td><td>57.5</td><td>54.8</td><td>70.6</td><td>85.6</td><td>43.1</td><td>55.8</td></tr>
-<tr><td align="left">Gemini-3.1-Pro</td><td>69.4</td><td>54.3</td><td>55.1</td><td>54.4</td><td>54.6</td><td>45.3</td><td>48.6</td><td>54.9</td><td>61.8</td><td>61.6</td><td>63.4</td><td>63.4</td><td>63.1</td><td>59.6</td></tr>
-<tr><td colspan="15" align="left"><i>MLLM-based video forgery detectors</i></td></tr>
-<tr><td align="left">BusterX++</td><td>70.1</td><td>79.6</td><td>70.4</td><td>71.7</td><td>82.3</td><td>71.8</td><td>58.7</td><td><b>87.3</b></td><td>64.4</td><td>65.1</td><td>71.1</td><td>87.1</td><td>49.9</td><td>72.7</td></tr>
-<tr><td align="left">DeepTraceReward</td><td>76.4</td><td>58.8</td><td>64.5</td><td>64.1</td><td>63.9</td><td>56.5</td><td>59.3</td><td>65.5</td><td>55.5</td><td>54.2</td><td>51.9</td><td>55.4</td><td>53.5</td><td>62.9</td></tr>
-<tr><td align="left">Skyra-RL</td><td>68.2</td><td>55.7</td><td>51.7</td><td>51.7</td><td>53.5</td><td>63.4</td><td>50.6</td><td>59.6</td><td>83.4</td><td>83.8</td><td>74.0</td><td>86.9</td><td>68.5</td><td>64.6</td></tr>
-<tr><td align="left">VideoVeritas</td><td>94.3</td><td>91.4</td><td>85.8</td><td>80.8</td><td>86.0</td><td>86.6</td><td>67.6</td><td>86.3</td><td>72.4</td><td>75.3</td><td>76.0</td><td>91.5</td><td>69.3</td><td>86.2</td></tr>
-<tr><td align="left">ARGUS</td><td>86.4</td><td>78.9</td><td>61.8</td><td>56.5</td><td>65.1</td><td>67.6</td><td>56.1</td><td>73.5</td><td>73.3</td><td>71.1</td><td>80.4</td><td>90.5</td><td>64.2</td><td>76.2</td></tr>
-<tr><td colspan="15" align="left"><i>Agentic investigation</i></td></tr>
-<tr><td align="left">WeVisForensics-SFT</td><td>93.9</td><td>94.2</td><td>83.8</td><td>77.9</td><td>82.1</td><td>95.6</td><td>75.9</td><td>82.5</td><td>92.4</td><td>94.2</td><td>93.6</td><td>96.0</td><td>95.2</td><td>91.3</td></tr>
-<tr><td align="left"><b>WeVisForensics-DTPO</b></td><td><b>97.7</b></td><td><b>97.5</b></td><td><b>88.9</b></td><td><b>82.9</b></td><td><b>89.6</b></td><td><b>98.6</b></td><td><b>82.4</b></td><td>85.6</td><td><b>97.3</b></td><td><b>98.0</b></td><td><b>98.0</b></td><td><b>98.8</b></td><td><b>97.0</b></td><td><b>95.2</b></td></tr>
-</tbody>
-</table>
-
-</details>
-
-## 🏗️ How It Works
-
-![Overview](assets/overview.png)
-
-**1. Investigator.** The main agent reads a 1 FPS overview of up to 16 frames and, at each step, emits one JSON action: call an inspector on a time window, or answer `real` / `fake`. It reads each observation before deciding what to examine next, and concludes within five steps.
-
-**2. Forensic sub-agent library.** Each inspector focuses on one artifact type, decodes its own window at 2 FPS and returns a verdict, a confidence, and a short report of what it saw.
-
-| Inspector | Looks at | Checks |
-| --- | --- | --- |
-| 🎨 `visual_appearance` | a time window | texture, boundaries, flicker, lighting |
-| ⚙️ `physical_consistency` | a time window | motion, anatomy, contact, materials |
-| 🧠 `common_sense` | a time window | causality, affordance, event order |
-| 🔤 `ocr_consistency` | one moment | text detection, then a glyph check on each crop |
-| 🗣️ `voice_profile` | the audio track | speaker age, gender, and affect against the visible speaker |
-| 📝 `asr_analysis` | the audio track | transcript content and timing |
-
-**3. Dual-timescale co-evolution (DTPO).** Interactions feed both levels: the investigator learns fast, through reinforcement learning with call-level credit for inspections worth making; the inspectors refine slowly, guided by annotated artifact intervals, to report subtle artifacts they once dismissed.
-
-![DTPO](assets/method.png)
-
-## 🚀 Quick Start
-
-### Installation
+用 Python 3.10 或更高版本、带 CUDA 的 PyTorch 和配套 torchvision。请在终端执行。先克隆这个分支；下载了项目 ZIP 时，解压后直接进入含 `detect.py` 的目录，从检查 CUDA 的命令开始。
 
 ```bash
-git clone https://github.com/Tencent/WeVisForensics.git && cd WeVisForensics
-conda create -n wevisforensics python=3.10 -y && conda activate wevisforensics
-conda install -c conda-forge ffmpeg -y
-pip install -r requirements.txt && pip install -e .
+git clone --branch scitifical_image --single-branch https://github.com/Audsbrecolo/zero-shot.git
+cd zero-shot
+python -c "import torch, torchvision; print('CUDA 可用', torch.cuda.is_available())"
+python -m pip install -r requirements-image-local.txt
+python detect.py "real/experiment figure/2308.14409_fig4.png" --out results/line-chart.json
 ```
 
-WeVisForensics can be deployed in three ways. The multi-GPU setup gives each inspector its own vLLM server and suits large-scale evaluation. The single-GPU setup runs everything on one card and is the easiest way to try it locally. The Transformers setup needs no vLLM and backs the Gradio demo and the Hugging Face Space.
-
-### Option 1: Multi-GPU deployment
-
-Merge the adapters, serve each inspector on its own GPU, and run the investigator in-process:
+检测其他单张图片时只改路径。含空格的路径放进双引号。默认模型为 Qwen3-VL-8B-Instruct，首次运行会下载权重。如果学校服务器已存好权重，使用 `--model /实际的模型目录`。
 
 ```bash
-python scripts/merge_lora.py --base Qwen/Qwen3.5-4B \
-  --adapters weights/WeVisForensics-4B-LoRA --output weights/WeVisForensics-4B-merged
-
-MODEL_ROOT=weights/WeVisForensics-4B-merged ASR_MODEL=Qwen/Qwen3.5-4B \
-  GPUS=0,1,2,3,4 bash scripts/serve_full.sh
+python detect.py "real/illustration/2411.15231_fig5.png" --out results/encoder.json
+python detect.py "real/overview/2409.16586_fig5.png" --binary --out results/overview.json
 ```
 
-Point `engine.model` in `configs/multi_server.json` at `weights/WeVisForensics-4B-merged/main`, then run:
+如果已有兼容 OpenAI 接口且支持多图与 JSON 的视觉模型服务，可以直接连接。该命令会将预览和局部图送到指定服务。默认地址是本机。
 
 ```bash
-python scripts/infer.py demo/examples/c04559bab78f9a8b5b7e.mp4
+python -m pip install -r requirements-image.txt
+python detect.py "real/experiment figure/2308.14409_fig4.png" --backend api --base-url http://127.0.0.1:8000/v1 --out results/line-chart.json
 ```
 
-See [docs/deployment.md](docs/deployment.md) for details.
+[在 Linux CPU 上启动 Qwen 量化服务的完整命令](docs/image-runtime.md)给出了权重、视觉投影和服务启动方法。旧的原始显微图模式用 `--profile microscopy` 运行。
 
-### Option 2: Single-GPU deployment
+## 一张图是怎样判的
 
-Here the investigator and all inspectors share one base model, switching between LoRA adapters inside a single vLLM process, so no merge step is needed. A single 24 GB GPU is enough:
+四个取证角色分别检查数据与视觉编码、流程与连接关系、文字与符号、面板与对应关系。它们各看全图和不同位置的放大图。四个角色共用一个模型。随后同一模型回看图片复核每条证据，裁决角色引用保留的证据给出结果。通常每图调用六次，输出格式异常时允许重试。
 
-```bash
-BASE=Qwen/Qwen3.5-4B ADAPTERS=weights/WeVisForensics-4B-LoRA \
-  GPU_MEMORY_UTILIZATION=0.66 bash scripts/serve_lora.sh
+- `verdict` 是有证据约束的判断，可以是 `real`、`ai_generated` 或 `uncertain`。最后一项表示仅凭当前图像证据无法区分来源。
+- `--binary` 适合做必须二选一的实验。若原裁决为证据不足，再加一次比较，将倾向写入 `binary_comparison`。保留原裁决以便统计弃判率。二选一结果不带经过校准的概率。
+- `--mode direct` 是只给同一模型看一次全图的对照。可以用它与五角色方案在相同图片上比较。
+- 用编辑器打开 JSON。`inspections` 写每个角色检查了什么，`candidates` 给出区域和替代解释，`reviews` 解释哪些观察得以保留。`image.boxes_xyxy` 可定位回原图。
 
-python scripts/infer.py demo/examples/c04559bab78f9a8b5b7e.mp4 \
-  --config configs/lora_single_server.json --main-backend http
-```
-
-### Option 3: Transformers (Gradio demo / Hugging Face Space)
-
-The whole agent runs in-process with Transformers on one GPU with at least 24 GB. The investigator and the four visual inspectors share one copy of the base model, and the active role's adapter is merged into its weights before each call. OCR runs on CPU, so the same code also fits ZeroGPU. It pins its own PyTorch, so use a separate environment:
-
-```bash
-pip install -r demo/requirements.txt "gradio>=6.0"
-WVF_ADAPTERS=weights/WeVisForensics-4B-LoRA python demo/app.py
-```
-
-Upload a video, pick a window of up to 16 s, and follow the investigation step by step. To deploy it as a Space, upload the contents of `demo/` as the Space root; settings are listed in [demo/README.md](demo/README.md).
-
-### Python API
-
-```python
-import asyncio
-from main_agent import build_agent, load_config
-
-agent = build_agent(load_config("configs/multi_server.json"))
-# Single GPU: build_agent(load_config("configs/lora_single_server.json"), main_backend="http")
-trajectory = asyncio.run(agent.run("demo/examples/c04559bab78f9a8b5b7e.mp4"))
-
-print(trajectory.answer)            # "real" or "fake"
-for step in trajectory.steps:       # every action, inspector call, and observation
-    print(step["action"], step.get("observation"))
-```
-
-## 🎮 Gradio Demo
-
-Live analysis runs on the Transformers backend of [Option 3](#option-3-transformers-gradio-demo--hugging-face-space). To browse the ten recorded investigations in `demo/examples/` without a GPU:
-
-```bash
-pip install "gradio>=6.0"
-WVF_LOCAL=0 python demo/app.py
-```
-
-## 📊 Evaluation
-
-See [evaluation/README.md](evaluation/README.md).
-
-## 🖼️ Representative Visualizations
-
-Turn-by-turn rollouts of WeVisForensics on held-out videos, covering visual appearance, physical consistency, OCR, common sense, voice profile and real videos, are available on our [project page](https://tencent.github.io/WeVisForensics/#demo).
-
-## 📖 Citation
-
-If WeVisForensics is helpful to your work, please consider giving us a ⭐ and citing:
-
-```bibtex
-@misc{du2026wevisforensicsselfevolvingagentomni,
-      title={WeVisForensics: Self-Evolving Agent for Omni AI-Generated Video Detection}, 
-      author={Yipeng Du and Yuxi Li and Ying Zhang and Chong Sun and Chen Li and Jing Lyu and Ying Tai},
-      year={2026},
-      eprint={2611.21373},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2611.21373}, 
-}
-```
-
-## 📜 License
-
-WeVisForensics is released under the [Apache-2.0 License](LICENSE.txt). Third-party components keep their original licenses.
+[从入口开始读代码](docs/paper-figures.md) · [测试记录与评测方法](docs/science-image-validation.md) · [原 WeVisForensics 视频项目](README-WeVisForensics.md)

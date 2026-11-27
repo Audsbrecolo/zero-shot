@@ -1,0 +1,4 @@
+-r requirements-image.txt
+transformers==4.57.6
+accelerate>=1,<2
+# PyTorch 和 torchvision 使用容器中与 CUDA 匹配的一对，见 README。
