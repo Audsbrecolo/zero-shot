@@ -10,6 +10,8 @@
 | [real/illustration](real/illustration/) | 5 | 编码器与解码器连接图、训练流程图、模块示意图 |
 | [real/overview](real/overview/) | 6 | 框架总览、搜索空间、表格与网络结构组合图 |
 
+这 21 张原图的 Git 文件哈希均与 SciFigDetect 的公开示例一致。每张对应一张 Nano Banana 生成图和两张 GPT 生成图，可以在相同论文主题下比较真假。[21 组原图与生成图对应表](examples/science/paper-pairs.csv)
+
 ## 先在学校 GPU 容器跑一张
 
 用 Python 3.10 或更高版本、带 CUDA 的 PyTorch 和配套 torchvision。请在终端执行。先克隆这个分支；下载了项目 ZIP 时，解压后直接进入含 `detect.py` 的目录，从检查 CUDA 的命令开始。

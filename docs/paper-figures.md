@@ -28,3 +28,9 @@ python -m unittest discover -s tests -p 'test_*image.py'
 python -m unittest discover -s tests -p 'test_paper_figures.py'
 python detect.py "real/experiment figure/2308.14409_fig4.png" --backend api --binary --out results/line-chart.json
 ```
+
+## 使用同题生成图
+
+[paper-pairs.csv](../examples/science/paper-pairs.csv) 的每一行对应分支中的一张原图。`git_blob` 为原图的 Git 对象哈希，`real_url` 是上游真实样本。`banana`、`gpt_v1`、`gpt_v2` 是同论文、同图号的三个合成对照链接。21 行均通过了本地原图与上游原图哈希匹配，共有 63 个合成样本路径，分属两个生成器。链接固定到上游提交 24093d01。项目方将两类生成器标为 Nano Banana Pro 和 GPT-image-1.5。[SciFigDetect 官方数据说明](https://joyce-yoyo.github.io/SciFigDetect/)
+
+CSV 只用于人工选择样本与事后计分。复现时给程序输入一张图片，独立得到预测，再读取真实标签核对。比较不同生成器时分别报告结果，按论文或原图分组，避免把同一原图的多个变体当作互相独立的证据。
