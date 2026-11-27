@@ -1,0 +1,191 @@
+{
+  "schema_version": 2,
+  "profile": "paper",
+  "binary_comparison": {
+    "label": "real",
+    "explanation": "图中图例与数据点颜色/形状完全匹配，是常规作图中标准的图例与数据映射方式，无AI生成特异性特征。AI生成图虽可能正确匹配，但此为常规作图中必然存在的元素，无法据此判断来源。",
+    "basis": "forced_after_abstention"
+  },
+  "model": "Qwen/Qwen3-VL-8B-Instruct",
+  "backend": "api",
+  "mode": "agents",
+  "image": {
+    "sha256": "d9035c92478c97bce0f50940fc38bb9857907d8ed32c39911570c27d327c42c0",
+    "size": [
+      574,
+      349
+    ],
+    "original_mode": "RGB",
+    "overview_size": [
+      574,
+      349
+    ],
+    "profile": "paper",
+    "display": "按原始灰度或颜色转换为 RGB，透明背景合成到白色。",
+    "boxes_xyxy": {
+      "ALL": [
+        [
+          0,
+          0,
+          574,
+          349
+        ]
+      ],
+      "TL": [
+        [
+          0,
+          0,
+          287,
+          174
+        ]
+      ],
+      "TR": [
+        [
+          287,
+          0,
+          574,
+          174
+        ]
+      ],
+      "BL": [
+        [
+          0,
+          174,
+          287,
+          349
+        ]
+      ],
+      "BR": [
+        [
+          287,
+          174,
+          574,
+          349
+        ]
+      ],
+      "Z1": [
+        [
+          0,
+          0,
+          310,
+          188
+        ]
+      ],
+      "Z2": [
+        [
+          264,
+          0,
+          574,
+          188
+        ]
+      ],
+      "Z3": [
+        [
+          0,
+          160,
+          310,
+          349
+        ]
+      ],
+      "Z4": [
+        [
+          264,
+          160,
+          574,
+          349
+        ]
+      ]
+    },
+    "pair_ncc": null
+  },
+  "inspections": {
+    "encoding": "在图中检查了坐标轴、图例、数据点与线条的映射关系及局部裁剪区域的标签。",
+    "connections": "在图中检查了全图及局部裁剪区域的图表元素、图例、坐标轴标签与数据点映射关系。",
+    "notation": "在图中检查了坐标轴标签、图例、数据点符号、刻度数值及文字标注的可读性与一致性。",
+    "panels": "在图中检查了全图的坐标轴标签、图例与数据点的映射关系"
+  },
+  "format_notes": {
+    "数据与视觉编码": "模型返回 2 条观察，采用第 1 条格式合格的记录。",
+    "流程与连接关系": "模型返回 2 条观察，采用第 1 条格式合格的记录。"
+  },
+  "candidates": [
+    {
+      "id": "E1",
+      "role": "encoding",
+      "region": "ALL",
+      "location": "图例与数据线的对应关系",
+      "finding": "图例中灰色圆点线对应“Adaptation iter.”，黑色方块线对应“LoRA parameter”，且图中数据点颜色/形状与图例完全匹配。",
+      "direction": "neutral",
+      "alternative": "常规作图中常见的图例与数据映射方式。"
+    },
+    {
+      "id": "E2",
+      "role": "connections",
+      "region": "ALL",
+      "location": "图例框内",
+      "finding": "图例中“Adaptation iter.”对应灰色圆点，“LoRA parameter”对应黑色方块，且图中数据点颜色与图例一致。",
+      "direction": "neutral",
+      "alternative": "常规作图中图例与数据点颜色匹配是标准做法。"
+    },
+    {
+      "id": "E3",
+      "role": "notation",
+      "region": "ALL",
+      "location": "图例框内",
+      "finding": "图例中 'Adaptation iter.' 对应灰色圆点，'LoRA parameter' 对应黑色方块，符号与图中数据点一一对应。",
+      "direction": "neutral",
+      "alternative": "常规作图中图例与数据点符号的映射关系常见，无AI生成特异性特征。"
+    },
+    {
+      "id": "E4",
+      "role": "panels",
+      "region": "ALL",
+      "location": "图例框内",
+      "finding": "图例中灰色圆点对应“Adaptation iter.”，黑色方块对应“LoRA parameter”，与图中曲线符号完全匹配",
+      "direction": "neutral",
+      "alternative": "常规作图时图例与符号的对应关系需手动设置，AI 生成图也可能正确匹配，无法仅凭此判断来源"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "E1",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中灰色圆点线对应“Adaptation iter.”，黑色方块线对应“LoRA parameter”，且图中数据点颜色/形状与图例完全匹配。此为常规作图中标准的图例与数据映射方式，无AI生成特异性特征。"
+    },
+    {
+      "id": "E2",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中“Adaptation iter.”对应灰色圆点，“LoRA parameter”对应黑色方块，且图中数据点颜色与图例一致。这是常规作图中图例与数据点颜色匹配的标准做法，无法据此判断来源。"
+    },
+    {
+      "id": "E3",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中 'Adaptation iter.' 对应灰色圆点，'LoRA parameter' 对应黑色方块，符号与图中数据点一一对应。此为常规作图中常见的图例与数据点符号映射关系，无AI生成特异性特征。"
+    },
+    {
+      "id": "E4",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中灰色圆点对应“Adaptation iter.”，黑色方块对应“LoRA parameter”，与图中曲线符号完全匹配。这是常规作图中图例与符号的对应关系，AI生成图也可能正确匹配，无法仅凭此判断来源。"
+    }
+  ],
+  "verdict": {
+    "label": "uncertain",
+    "evidence_ids": [],
+    "explanation": "所有证据均指向常规作图中常见的图例与数据点映射关系，无AI生成特异性特征，且无法排除AI生成可能性，故判定为uncertain。"
+  },
+  "calls": 9,
+  "attempts": {
+    "数据与视觉编码": 2,
+    "流程与连接关系": 2,
+    "文字与符号": 1,
+    "面板与对应关系": 1,
+    "证据复核": 1,
+    "来源裁决": 1,
+    "实验二选一": 1
+  },
+  "seconds": 364.86
+}

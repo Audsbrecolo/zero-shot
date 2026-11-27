@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "profile": "paper",
+  "binary_comparison": {
+    "label": "real",
+    "explanation": "图中图例与数据点的映射关系（实线/虚线与颜色/符号）完全一致，且符合科学图表制作的常规规范。这种精确的符号-图例对应是人工制图的典型特征，AI生成图通常难以在如此细节上保持完全一致且无错误。无任何AI生成特异性证据（如文字错误、风格不一致、重复模块、伪彩等），因此更可能为研究者常规作图。",
+    "basis": "forced_after_abstention"
+  },
+  "model": "Qwen/Qwen3-VL-8B-Instruct",
+  "backend": "api",
+  "mode": "agents",
+  "image": {
+    "sha256": "2a8504214b1f8f1653a462d9610f8d86c8fe30a11fe9a2ce9e2af07469aa10ee",
+    "size": [
+      574,
+      349
+    ],
+    "original_mode": "RGB",
+    "overview_size": [
+      574,
+      349
+    ],
+    "profile": "paper",
+    "display": "按原始灰度或颜色转换为 RGB，透明背景合成到白色。",
+    "boxes_xyxy": {
+      "ALL": [
+        [
+          0,
+          0,
+          574,
+          349
+        ]
+      ],
+      "TL": [
+        [
+          0,
+          0,
+          287,
+          174
+        ]
+      ],
+      "TR": [
+        [
+          287,
+          0,
+          574,
+          174
+        ]
+      ],
+      "BL": [
+        [
+          0,
+          174,
+          287,
+          349
+        ]
+      ],
+      "BR": [
+        [
+          287,
+          174,
+          574,
+          349
+        ]
+      ],
+      "Z1": [
+        [
+          0,
+          0,
+          310,
+          188
+        ]
+      ],
+      "Z2": [
+        [
+          264,
+          0,
+          574,
+          188
+        ]
+      ],
+      "Z3": [
+        [
+          0,
+          160,
+          310,
+          349
+        ]
+      ],
+      "Z4": [
+        [
+          264,
+          160,
+          574,
+          349
+        ]
+      ]
+    },
+    "pair_ncc": null
+  },
+  "inspections": {
+    "encoding": "在图中检查了坐标轴、图例、数据点和线条的映射关系及视觉一致性。",
+    "connections": "在图中检查了全图及局部裁剪图的图表结构、图例、坐标轴标签与数据点映射关系。",
+    "notation": "在图中检查了全图及局部裁剪区域的术语、变量、图例、单位和符号的重复性与可读性。",
+    "panels": "在图中检查了标题、面板编号、图例与数据点的对应关系"
+  },
+  "format_notes": {},
+  "candidates": [
+    {
+      "id": "E1",
+      "role": "encoding",
+      "region": "ALL",
+      "location": "图例与对应线条",
+      "finding": "图例中'Adaptation iter.'对应实线，'LoRA parameter'对应虚线，且图中实线与虚线分别对应灰色圆点与黑色方块数据点，映射关系一致。",
+      "direction": "neutral",
+      "alternative": "常规作图中常见的图例与数据符号匹配方式。"
+    },
+    {
+      "id": "E2",
+      "role": "connections",
+      "region": "ALL",
+      "location": "图例框内",
+      "finding": "图例中“Adaptation iter.”对应灰色实线，“LoRA parameter”对应黑色虚线，且图中线条样式与图例完全匹配。",
+      "direction": "neutral",
+      "alternative": "常规图表制作中常见的图例与线条样式对应关系。"
+    },
+    {
+      "id": "E3",
+      "role": "notation",
+      "region": "ALL",
+      "location": "图例框内",
+      "finding": "图例中 'LoRA parameter' 与 'Adaptation iter.' 两个标签在全图和局部裁剪图中完全一致，且符号（实线圆点、虚线方块）与图中数据点一一对应。",
+      "direction": "neutral",
+      "alternative": "这是常规图表制作中为区分不同数据系列而设置的标准图例，符合科学绘图规范。"
+    },
+    {
+      "id": "E4",
+      "role": "panels",
+      "region": "ALL",
+      "location": "图例与数据点",
+      "finding": "图例中'Adaptation iter.'对应灰色实线数据点，'LoRA parameter'对应黑色虚线数据点，且图中数据点颜色与图例完全一致",
+      "direction": "neutral",
+      "alternative": "常规作图中图例与数据点的映射关系是标准做法"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "E1",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中'Adaptation iter.'对应实线，'LoRA parameter'对应虚线，且图中实线与虚线分别对应灰色圆点与黑色方块数据点，映射关系一致。这是常规作图中常见的图例与数据符号匹配方式，无AI生成特异性。"
+    },
+    {
+      "id": "E2",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中“Adaptation iter.”对应灰色实线，“LoRA parameter”对应黑色虚线，且图中线条样式与图例完全匹配。这是常规图表制作中常见的图例与线条样式对应关系，无AI生成特异性。"
+    },
+    {
+      "id": "E3",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中 'LoRA parameter' 与 'Adaptation iter.' 两个标签在全图和局部裁剪图中完全一致，且符号（实线圆点、虚线方块）与图中数据点一一对应。这是常规图表制作中为区分不同数据系列而设置的标准图例，符合科学绘图规范，无AI生成特异性。"
+    },
+    {
+      "id": "E4",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图例中'Adaptation iter.'对应灰色实线数据点，'LoRA parameter'对应黑色虚线数据点，且图中数据点颜色与图例完全一致。这是常规作图中图例与数据点的映射关系是标准做法，无AI生成特异性。"
+    }
+  ],
+  "verdict": {
+    "label": "uncertain",
+    "evidence_ids": [],
+    "explanation": "所有证据均指向常规作图中的标准图例与数据映射关系，无AI生成特异性，也无任何指向AI生成的异常特征，因此无法确定来源。"
+  },
+  "calls": 9,
+  "attempts": {
+    "数据与视觉编码": 1,
+    "流程与连接关系": 2,
+    "文字与符号": 2,
+    "面板与对应关系": 1,
+    "证据复核": 1,
+    "来源裁决": 1,
+    "实验二选一": 1
+  },
+  "seconds": 355.42
+}

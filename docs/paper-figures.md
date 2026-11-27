@@ -34,3 +34,26 @@ python detect.py "real/experiment figure/2308.14409_fig4.png" --backend api --bi
 [paper-pairs.csv](../examples/science/paper-pairs.csv) 的每一行对应分支中的一张原图。`git_blob` 为原图的 Git 对象哈希，`real_url` 是上游真实样本。`banana`、`gpt_v1`、`gpt_v2` 是同论文、同图号的三个合成对照链接。21 行均通过了本地原图与上游原图哈希匹配，共有 63 个合成样本路径，分属两个生成器。链接固定到上游提交 24093d01。项目方将两类生成器标为 Nano Banana Pro 和 GPT-image-1.5。[SciFigDetect 官方数据说明](https://joyce-yoyo.github.io/SciFigDetect/)
 
 CSV 只用于人工选择样本与事后计分。复现时给程序输入一张图片，独立得到预测，再读取真实标签核对。比较不同生成器时分别报告结果，按论文或原图分组，避免把同一原图的多个变体当作互相独立的证据。
+
+## 端到端单图实测
+
+每行都实际调用了同一 Qwen3-VL-8B-Instruct（Q4_K_M、F16 视觉投影）。使用 llama.cpp b8219 的本机 HTTP 接口、6144 上下文、每个视图最多 480 个视觉 token。选择三种类别各一张原图，并选折线图的 GPT 第一变体作同题 AI 对照。模型只读取像素和任务提示，未读取文件名、目录、外部配对表或标签。各样本分别运行，报告保留实际调用次数，包括格式重试与强制二选一。
+
+| 单图实测报告 | 数据来源标签 | 有证据约束的主裁决 | 实验二选一 | 调用数 |
+| --- | --- | --- | --- | ---: |
+| [仓库双横轴折线图](../examples/science/paper-reports/experimental.json) | real | 证据不足 | 倾向常规制图 | 9 |
+| [仓库编码器/解码器示意图](../examples/science/paper-reports/illustration.json) | real | 证据不足 | 倾向常规制图 | 11 |
+| [仓库框架总览图](../examples/science/paper-reports/overview.json) | real | 证据不足 | 倾向常规制图 | 9 |
+| [同题 GPT-image-1.5 折线图](../examples/science/paper-reports/gpt.json) | ai_generated | 证据不足 | 倾向常规制图 | 9 |
+
+四张的主裁决均为“证据不足”，明确判断覆盖率为 0/4。强制二选一时四张都选了常规制图，三张真实原图判对，唯一的生成图漏检。对这四张全部猜真实也会得到相同结果。原始折线图的四个取证角色反复引用同一项图例与符号对应关系；同题生成图也具备这项特征。复核把这些观察全部保留并标为中性，不能把它们当成四条独立的来源证据。
+
+上述真实类均取自当前分支，生成类取自 CSV 第一行的 gpt_v1 列。样本经过挑选，用来检查不同图类和真假对照是否能跑通。如此小的样本无法支持准确率或统计显著提升结论。生成图与同题原图的尺寸均为 574 × 349 像素。
+
+复现同题生成图：
+
+```bash
+mkdir -p results
+curl -fL 'https://raw.githubusercontent.com/Joyce-yoyo/SciFigDetect/24093d014b0e09f40c7904f28de3022c07ba17e6/SciFigDetectDataset/gpt/variant_1/experimental%20figure/2308.14409_fig4.png' -o results/chart-control.png
+python detect.py results/chart-control.png --backend api --binary --out results/chart-control.json
+```

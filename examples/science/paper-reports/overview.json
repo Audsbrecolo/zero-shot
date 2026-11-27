@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "profile": "paper",
+  "binary_comparison": {
+    "label": "real",
+    "explanation": "图中所有元素（模块布局、箭头连接、文字标注、重复术语与变量、局部放大结构）均符合科学论文插图的常规制图规范，无AI生成特有的不连贯、模糊或不合逻辑的视觉特征。虽然AI可能生成此类结构，但所有可见证据指向常规人工制图，且无任何AI生成的可疑迹象。",
+    "basis": "forced_after_abstention"
+  },
+  "model": "Qwen/Qwen3-VL-8B-Instruct",
+  "backend": "api",
+  "mode": "agents",
+  "image": {
+    "sha256": "87f02a5ecae659be6893f6a51e416c95d6be38a1d05375d3874a61d3e6acc3be",
+    "size": [
+      1661,
+      1199
+    ],
+    "original_mode": "RGB",
+    "overview_size": [
+      1024,
+      739
+    ],
+    "profile": "paper",
+    "display": "按原始灰度或颜色转换为 RGB，透明背景合成到白色。",
+    "boxes_xyxy": {
+      "ALL": [
+        [
+          0,
+          0,
+          1661,
+          1199
+        ]
+      ],
+      "TL": [
+        [
+          0,
+          0,
+          830,
+          599
+        ]
+      ],
+      "TR": [
+        [
+          830,
+          0,
+          1661,
+          599
+        ]
+      ],
+      "BL": [
+        [
+          0,
+          599,
+          830,
+          1199
+        ]
+      ],
+      "BR": [
+        [
+          830,
+          599,
+          1661,
+          1199
+        ]
+      ],
+      "Z1": [
+        [
+          0,
+          0,
+          896,
+          647
+        ]
+      ],
+      "Z2": [
+        [
+          764,
+          0,
+          1661,
+          647
+        ]
+      ],
+      "Z3": [
+        [
+          0,
+          551,
+          896,
+          1199
+        ]
+      ],
+      "Z4": [
+        [
+          764,
+          551,
+          1661,
+          1199
+        ]
+      ]
+    },
+    "pair_ncc": null
+  },
+  "inspections": {
+    "encoding": "在图中检查了整体结构、模块标注、箭头连接与局部裁剪区域的对应关系。",
+    "connections": "在图中检查了整体结构、模块布局、箭头流向及文字标签，确认为常规科学制图。",
+    "notation": "在图中检查了术语、变量、图例和符号的重复出现情况，确认了图中可见的可读文字与符号。",
+    "panels": "在图中检查了面板编号与内容的对应关系，确认 Z2 和 Z4 为裁剪区域，其内容与主图一致。"
+  },
+  "format_notes": {},
+  "candidates": [
+    {
+      "id": "E1",
+      "role": "encoding",
+      "region": "ALL",
+      "location": "图中 (a) General Framework 与 (c) Mixed Search Space 的结构布局",
+      "finding": "图中 (a) 和 (c) 部分的模块布局、箭头连接方式、文字标注（如 'Search Module', 'T-operator 1', 'S-operator 2'）在视觉上保持一致，且 (c) 部分的 'Mixed Search Space' 与 (a) 中的 'Search Module' 在结构上存在明确的对应关系。",
+      "direction": "neutral",
+      "alternative": "这是常规科学制图中常见的模块化结构展示，通过分层和局部放大来说明系统组成，符合论文插图的常规表达方式。"
+    },
+    {
+      "id": "E2",
+      "role": "connections",
+      "region": "ALL",
+      "location": "从左上角 'Search Operation' 开始的箭头",
+      "finding": "可见实线箭头从 'Search Operation' 指向 'Operator'，箭头方向明确，无AI生成常见的模糊或不连贯笔触。",
+      "direction": "neutral",
+      "alternative": "常规制图中使用矢量箭头表示流程方向是标准做法。"
+    },
+    {
+      "id": "E3",
+      "role": "notation",
+      "region": "ALL",
+      "location": "图中所有模块的标签，如 'Search Operation', 'Operator', 'Embedding Layer', 'Search Module', 'Output Layer', 'T-operator 1', 'S-operator 1' 等",
+      "finding": "术语和变量在不同模块中重复出现，如 'Search Module' 在 (a) 和 (b) 中均出现，'h₀', 'h₁', 'h₂', 'h₃' 在 (b) 和 (c) 中重复出现，'T-operator 1' 和 'S-operator 1' 在 (c) 中重复出现。",
+      "direction": "neutral",
+      "alternative": "在科学论文中，重复出现的术语和变量是标准做法，用于描述模型结构，与 AI 生成无关。"
+    },
+    {
+      "id": "E4",
+      "role": "panels",
+      "region": "Z2",
+      "location": "面板 (b) Search Module",
+      "finding": "该区域与主图 (a) 中的 (b) 部分完全一致，包含相同的节点 h0, h1, h2, h3 和连接箭头。",
+      "direction": "neutral",
+      "alternative": "裁剪区域与主图对应是常规排版行为，用于展示局部细节。"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "E1",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图中 (a) 和 (c) 部分的模块布局、箭头连接方式、文字标注在视觉上保持一致，且 (c) 部分与 (a) 中的 'Search Module' 存在明确对应关系。这是科学插图中常见的分层与局部放大展示结构，符合论文常规作图方式，无AI生成特征。"
+    },
+    {
+      "id": "E2",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "从 'Search Operation' 指向 'Operator' 的实线箭头方向明确，笔触清晰无模糊或不连贯，符合矢量图标准绘制方式，无法区分来源。"
+    },
+    {
+      "id": "E3",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "图中术语和变量（如 'Search Module', 'h₀', 'T-operator 1' 等）在不同模块中重复出现，这是科学论文中描述模型结构的标准做法，与AI生成无关。"
+    },
+    {
+      "id": "E4",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "面板 (b) Search Module 与主图 (a) 中的 (b) 部分完全一致，包含相同节点和连接，这是常规排版行为，用于展示局部细节，无AI生成特征。"
+    }
+  ],
+  "verdict": {
+    "label": "uncertain",
+    "evidence_ids": [],
+    "explanation": "所有证据均指向常规科学制图的结构与排版特征，无任何指向AI生成的异常或矛盾线索，但缺乏能明确指向来源的决定性证据（如作者署名、生成标记、数据来源等），故判定为 uncertain。"
+  },
+  "calls": 9,
+  "attempts": {
+    "数据与视觉编码": 2,
+    "流程与连接关系": 1,
+    "文字与符号": 2,
+    "面板与对应关系": 1,
+    "证据复核": 1,
+    "来源裁决": 1,
+    "实验二选一": 1
+  },
+  "seconds": 489.9
+}

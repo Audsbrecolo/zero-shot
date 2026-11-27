@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "profile": "paper",
+  "binary_comparison": {
+    "label": "real",
+    "explanation": "图中所有文字标签（如 'Encoder', 'Decoder', 'input', 'output', 'k', 'v'）位置准确、排版对称，箭头连接关系清晰且符合注意力机制图的常规绘制规范。裁剪图与主图的标签和结构拓扑一致，是标准的科学示意图重复排版。未见AI生成常见的不自然对称、语义错误或风格不一致等特征。虽然图中无实验数据或坐标，但作为示意图，其结构和标注完全符合人工绘制的常规科学制图标准。",
+    "basis": "forced_after_abstention"
+  },
+  "model": "Qwen/Qwen3-VL-8B-Instruct",
+  "backend": "api",
+  "mode": "agents",
+  "image": {
+    "sha256": "de0dcf979cc2f749e0bc44a12d7c4f0588faecab326e747549335d45a94952f6",
+    "size": [
+      910,
+      423
+    ],
+    "original_mode": "RGB",
+    "overview_size": [
+      910,
+      423
+    ],
+    "profile": "paper",
+    "display": "按原始灰度或颜色转换为 RGB，透明背景合成到白色。",
+    "boxes_xyxy": {
+      "ALL": [
+        [
+          0,
+          0,
+          910,
+          423
+        ]
+      ],
+      "TL": [
+        [
+          0,
+          0,
+          455,
+          211
+        ]
+      ],
+      "TR": [
+        [
+          455,
+          0,
+          910,
+          211
+        ]
+      ],
+      "BL": [
+        [
+          0,
+          211,
+          455,
+          423
+        ]
+      ],
+      "BR": [
+        [
+          455,
+          211,
+          910,
+          423
+        ]
+      ],
+      "Z1": [
+        [
+          0,
+          0,
+          491,
+          228
+        ]
+      ],
+      "Z2": [
+        [
+          419,
+          0,
+          910,
+          228
+        ]
+      ],
+      "Z3": [
+        [
+          0,
+          194,
+          491,
+          423
+        ]
+      ],
+      "Z4": [
+        [
+          419,
+          194,
+          910,
+          423
+        ]
+      ]
+    },
+    "pair_ncc": null
+  },
+  "inspections": {
+    "encoding": "在图中检查了全图结构、局部裁剪图的对应关系及文字标签。",
+    "connections": "在图中检查了全图的结构、标签、连线和局部裁剪区域的对应关系。",
+    "notation": "在图中检查了术语、变量、图例和符号的重复出现情况，确认了图中可见的可定位现象。",
+    "panels": "在图中检查了面板 Z2 和 Z4 的局部裁剪图与主图的结构一致性及标签匹配情况。"
+  },
+  "format_notes": {},
+  "candidates": [
+    {
+      "id": "E1",
+      "role": "encoding",
+      "region": "ALL",
+      "location": "Decoder区域的右侧",
+      "finding": "可见文字标签 'Decoder' 与右侧图形结构对应，且局部裁剪图 Z41 中的 'Decoder' 标签位置与原图一致。",
+      "direction": "neutral",
+      "alternative": "裁剪图是原图的局部复制，标签位置对应是正常编辑行为。"
+    },
+    {
+      "id": "E2",
+      "role": "connections",
+      "region": "ALL",
+      "location": "从左下角 input 节点出发的黑色实线箭头指向 Encoder 区域",
+      "finding": "可见一条黑色实线箭头从 'input' 节点出发，指向 'Encoder' 区域内的一个节点，箭头方向明确。",
+      "direction": "neutral",
+      "alternative": "这是标准的示意图绘制方式，用于表示数据流向。"
+    },
+    {
+      "id": "E3",
+      "role": "notation",
+      "region": "ALL",
+      "location": "Encoder 和 Decoder 区域",
+      "finding": "图中可见 'k' 和 'v' 作为变量符号在 Encoder 和 Decoder 两侧重复出现，箭头连接方式一致，且 'input' 和 'output' 标签在结构上对称分布。",
+      "direction": "neutral",
+      "alternative": "这是标准的注意力机制示意图，变量符号重复出现是该类图的常规表达方式，不构成 AI 生成的证据。"
+    },
+    {
+      "id": "E4",
+      "role": "panels",
+      "region": "Z2",
+      "location": "右上角区域",
+      "finding": "裁剪图 Z2 中的 'Decoder' 标签与主图中对应位置的标签完全一致，且其内部结构（如 k、v 节点和箭头）与主图的 Decoder 部分在拓扑关系上一致。",
+      "direction": "neutral",
+      "alternative": "常规排版中常会重复图标或施加伪彩，此处为标准图示重复，符合常规科学制图习惯。"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "E1",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "复核依据：裁剪图 Z41 中的 'Decoder' 标签位置与原图一致，且局部结构与主图 Decoder 区域对应，符合常规排版中对称或重复图示的编辑行为，无异常。"
+    },
+    {
+      "id": "E2",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "复核依据：可见黑色实线箭头从 'input' 节点指向 Encoder 区域内节点，箭头方向明确，符合标准示意图绘制规范，无 AI 生成特征。"
+    },
+    {
+      "id": "E3",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "复核依据：'k' 和 'v' 符号在 Encoder 和 Decoder 两侧重复出现，箭头连接方式一致，'input' 和 'output' 标签对称分布，是注意力机制图的常规表达，不构成 AI 生成证据。"
+    },
+    {
+      "id": "E4",
+      "status": "keep",
+      "direction": "neutral",
+      "reason": "复核依据：裁剪图 Z2 中的 'Decoder' 标签与主图位置一致，内部结构（k、v 节点和箭头）拓扑关系与主图 Decoder 部分一致，符合常规图示重复排版，无异常。"
+    }
+  ],
+  "verdict": {
+    "label": "uncertain",
+    "evidence_ids": [],
+    "explanation": "所有证据均指向常规科学制图行为（如对称结构、标准箭头、重复标签），无任何指向 AI 生成的特征，也无矛盾线索，因此无法确定来源。"
+  },
+  "calls": 11,
+  "attempts": {
+    "数据与视觉编码": 2,
+    "流程与连接关系": 2,
+    "文字与符号": 2,
+    "面板与对应关系": 2,
+    "证据复核": 1,
+    "来源裁决": 1,
+    "实验二选一": 1
+  },
+  "seconds": 446.62
+}
