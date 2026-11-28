@@ -1,0 +1,57 @@
+name: Scientific figure benchmark
+on:
+  push:
+    branches: ['benchmark/science-84-20261128']
+permissions:
+  contents: read
+concurrency:
+  group: science-84-20261128
+  cancel-in-progress: false
+jobs:
+  detect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - name: Check out the benchmark branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Prepare detector runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code e265cbb0832b62af261511a5d2506d994fd35681 -- detect.py science_image core examples/science/paper-pairs.csv
+          python3 -m venv "$RUNNER_TEMP/science-python"
+          "$RUNNER_TEMP/science-python/bin/pip" install --disable-pip-version-check --prefer-binary Pillow==13.0.0 numpy==2.3.5
+          mkdir -p "$RUNNER_TEMP/science-model"
+          cd "$RUNNER_TEMP/science-model"
+          qbase='https://huggingface.co/unsloth/Qwen3-VL-8B-Instruct-GGUF/resolve/b93a7ee713758252c555be4210c00540df954dc2'
+          download() {
+            curl -fsSL --retry 3 --retry-all-errors --max-time 1200 "$1" -o "$2" && echo "$3  $2" | sha256sum -c - && return 0
+            curl -fsSL --retry 3 --retry-all-errors --max-time 1200 "$1?download=true" -o "$2"
+            echo "$3  $2" | sha256sum -c -
+          }
+          download https://github.com/ggml-org/llama.cpp/releases/download/b8219/llama-b8219-bin-ubuntu-x64.tar.gz llama.tar.gz e3f2005b3afc270263f7faa869f5fc889c0d7de431d03aa074c903daa4848e81
+          tar xzf llama.tar.gz
+          download "$qbase/Qwen3-VL-8B-Instruct-Q4_K_M.gguf" qwen.gguf 108e7ff92b78eefd3db4741885104acba514255c11b617d3c7b197a5f46efe89 &
+          weights_pid=$!
+          download "$qbase/mmproj-F16.gguf" vision.gguf d406d03ebabefdef86a2c86bf0c1b65f9e046f7a81c218f25de4931b46a07fc4
+          wait "$weights_pid"
+      - name: Run original detector
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: '"$RUNNER_TEMP/science-python/bin/python" .github/science-batch/run.py "$SHARD"'
+      - name: Save results and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: science-shard-${{ matrix.shard }}-attempt-${{ github.run_attempt }}
+          path: batch-output/
+          retention-days: 7
+          if-no-files-found: warn
