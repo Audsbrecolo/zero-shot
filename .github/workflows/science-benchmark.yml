@@ -1,11 +1,11 @@
-name: Scientific figure benchmark
+name: Scientific figure timeout repairs
 on:
   push:
     branches: ['benchmark/science-84-20261128']
 permissions:
   contents: read
 concurrency:
-  group: science-84-20261128
+  group: science-84-timeout-repairs
   cancel-in-progress: false
 jobs:
   detect:
@@ -15,13 +15,13 @@ jobs:
       fail-fast: false
       max-parallel: 20
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        image: [03-banana, 08-banana, 13-banana, 09-banana, 03-gpt_v2, 06-gpt_v1, 04-gpt_v2, 09-gpt_v1, 13-real]
     steps:
       - name: Check out the benchmark branch
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-          fetch-depth: 2
+          fetch-depth: 0
       - name: Prepare detector runtime
         shell: bash
         run: |
@@ -45,13 +45,35 @@ jobs:
           wait "$weights_pid"
       - name: Run original detector
         env:
-          SHARD: ${{ matrix.shard }}
-        run: '"$RUNNER_TEMP/science-python/bin/python" .github/science-batch/run.py "$SHARD"'
+          IMAGE_ID: ${{ matrix.image }}
+        run: |
+          set -eu
+          "$RUNNER_TEMP/science-python/bin/python" - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, '.github/science-batch')
+          import run
+          key = os.environ['IMAGE_ID']
+          assigned = run.assigned
+          matches = [(s, t) for s in range(20) for t in assigned(s) if t[0]['id'] == key]
+          assert len(matches) == 1
+          shard, task = matches[0]
+          run.assigned = lambda s: [task] if s == shard else []
+          # Only extend the HTTP read timeout for this isolated CPU worker.
+          path = Path('science_image/model.py')
+          code = path.read_text()
+          assert code.count('timeout=600)') == 1
+          path.write_text(code.replace('timeout=600)', 'timeout=2400)'))
+          sys.argv = ['run.py', str(shard)]
+          run.main()
+          status = json.loads(Path('batch-output/status.json').read_text())
+          assert status == {key: 0}, status
+          PY
       - name: Save results and logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: science-shard-${{ matrix.shard }}-attempt-${{ github.run_attempt }}
+          name: science-repair-${{ matrix.image }}-attempt-${{ github.run_attempt }}
           path: batch-output/
           retention-days: 7
           if-no-files-found: warn
